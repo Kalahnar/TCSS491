@@ -11,12 +11,14 @@ const WALK = 1;
 const ATTACK = 2;
 const JUMP = 3;
 
+
+
 function ThinkingCloud(game, spritesheets) {
 	this.spritesheets = spritesheets;
-	this.animation = new Animation(spritesheets[3], 1152, 648, 1, 0.2, 1, true, 0.2, false);
+	this.animation = new Animation(spritesheets[3], 1152, 648, 1, 0.2, 1, true, 0.3, false);
 	this.ctx = game.ctx;
 	this.pressed = false;
-	Entity.call(this, game, 400,500);
+	Entity.call(this, game, 600,350);
 
 }
 
@@ -25,12 +27,89 @@ ThinkingCloud.prototype.constructor = ThinkingCloud;
 
 ThinkingCloud.prototype.draw = function() {
 	
-	if(this.game.entities[1].x >= 800 && this.game.entities[1].x <= 850){
+	if((this.game.entities[3].x >= 450 && this.game.entities[3].x <= 550)){
 		this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 		Entity.prototype.draw.call(this);
+		
+	}
+	if( (this.game.entities[3].x >= 350 && this.game.entities[3].x <= 380)) {
+		this.animation.drawFrame(this.game.clockTick, this.ctx, 350, this.y); //FIX THE NUMBERS
+		Entity.prototype.draw.call(this);	
 	}
 
 }
+
+ThinkingCloud.prototype.update = function () {
+	var ThinkingCloud = this;
+	this.ctx.canvas.addEventListener("keydown", function (e) { //get pressing to work
+		if (e.code === "keyY") {
+			console.log("clicked y");
+		} 		
+    }, false);
+	if((this.game.entities[1].x >= 450 && this.game.entities[1].x <= 475)) {
+		console.log("I should click Y");
+	}
+
+}
+
+function FatGuy(game, spritesheets) {
+	this.spritesheets = spritesheets;
+	this.animation = new Animation(spritesheets[4], 300, 418, 1, 0.5, 1, true, 0.85, false);
+	this.state = IDLE_RIGHT;
+	this.speed = 0;
+	this.ySpeed = 0;
+	this.ctx = game.ctx;
+	this.pressed = false;
+	Entity.call(this, game, 400, 530);
+}
+
+FatGuy.prototype = new Entity();
+FatGuy.prototype.constructor = FatGuy;
+
+FatGuy.prototype.update = function () {
+	var FatGuy = this;
+	this.ctx.canvas.addEventListener("keydown", function (e) {
+		if (e.code === "ArrowRight" && FatGuy.state !== WALK_RIGHT && 
+		    (FatGuy.state !== JUMP_RIGHT && FatGuy.state !== JUMP_LEFT)) {
+			FatGuy.pressed = true;
+			FatGuy.setState(WALK_RIGHT);
+		} 
+		if (e.code === "ArrowLeft" && FatGuy.state !== WALK_LEFT && 
+		           (FatGuy.state !== JUMP_RIGHT && FatGuy.state !== JUMP_LEFT)) {
+			FatGuy.pressed = true;
+			FatGuy.setState(WALK_LEFT);
+		}	
+	}, false);
+	this.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.code === "ArrowRight" && 
+		    FatGuy.state !== IDLE_RIGHT && 
+			FatGuy.state !== JUMP_RIGHT && 
+			FatGuy.state !== JUMP_LEFT &&		
+			FatGuy.state !== ATTACK_RIGHT && 
+			FatGuy.state !== ATTACK_LEFT) {
+			FatGuy.pressed = false;
+			FatGuy.setState(IDLE_RIGHT);
+		}
+		if (e.code === "ArrowLeft" && 
+		    FatGuy.state !== IDLE_LEFT && 
+			FatGuy.state !== JUMP_RIGHT && 
+			FatGuy.state !== JUMP_LEFT &&
+			FatGuy.state !== ATTACK_RIGHT && 
+			FatGuy.state !== ATTACK_LEFT) {
+			FatGuy.pressed = false;	
+			FatGuy.setState(IDLE_LEFT);
+		}
+    }, false);
+	this.x += this.game.clockTick * this.speed;
+	Entity.prototype.update.call(this);
+
+}
+FatGuy.prototype.draw = function () {
+    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+
 
 function Warrior(game, spritesheets) {
 	this.spritesheets = spritesheets;
@@ -38,8 +117,6 @@ function Warrior(game, spritesheets) {
 	this.state = IDLE_RIGHT;
     this.speed = 0;
 	this.ySpeed = 0 ;
-	this.isJumping = false;
-	this.isAttacking = false;
     this.ctx = game.ctx;
 	this.pressed = false;
     Entity.call(this, game, 400, 500);
@@ -61,25 +138,6 @@ Warrior.prototype.update = function () {
 			Warrior.pressed = true;
 			Warrior.setState(WALK_LEFT);
 		}
-		if (e.code === "ArrowUp") {
-			if((Warrior.state === WALK_RIGHT || Warrior.state === IDLE_RIGHT) && 
-			   Warrior.state !== JUMP_RIGHT) {
-				Warrior.setState(JUMP_RIGHT);
-			} else if ((Warrior.state === WALK_LEFT || Warrior.state === IDLE_LEFT) && 
-			           Warrior.state !== JUMP_LEFT) {
-				Warrior.setState(JUMP_LEFT);
-			}	
-		}
-		if (e.code === "ArrowDown") {
-			if((Warrior.state === WALK_RIGHT || Warrior.state === IDLE_RIGHT) && 
-			   Warrior.state !== JUMP_RIGHT) {
-				Warrior.setState(ATTACK_RIGHT);
-			} else if ((Warrior.state === WALK_LEFT || Warrior.state === IDLE_LEFT) && 
-			           Warrior.state !== JUMP_LEFT) {
-				Warrior.setState(ATTACK_LEFT);
-			}	
-		}
-		
 		
     }, false);
 	
@@ -127,16 +185,18 @@ Warrior.prototype.update = function () {
 		this.ySpeed = 0;
 	}
 	//condtional statements can go here
-    if (this.x >= 800 && this.x <= 850){ 
-		console.log("HelloWorld");
-	}
 	
     Entity.prototype.update.call(this);
 }
 
 Warrior.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
+	if(this.game.entities[3].x > 800) {
+		console.log("fat guy walking");
+		console.log(this.game.entities[3].x);
+	 //get the first entitiy to remove and 2nd one to show
+	}
+  /*  this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    Entity.prototype.draw.call(this);*/
 }
 
 Warrior.prototype.setState = function(state) {
@@ -178,4 +238,25 @@ Warrior.prototype.setState = function(state) {
 		this.state = ATTACK_LEFT;
 		this.animation = new Animation(this.spritesheets[ATTACK], 230, 768, 6, 0.14, 6, true, 0.5, true);
 	}
+}
+
+FatGuy.prototype.setState = function(state) {
+	if (state === IDLE_RIGHT) {
+		this.speed = 0;
+		this.state = IDLE_RIGHT;
+		this.animation = new Animation(this.spritesheets[4], 300, 418, 1, 0.5, 1, true, 0.85, false);
+	} else if (state === IDLE_LEFT) {
+		this.speed = 0;
+		this.state = IDLE_LEFT;
+		this.animation = new Animation(this.spritesheets[4], 300, 418, 1, 0.5, 1, true, 0.85, true);
+	} else if (state === WALK_RIGHT) {
+		this.speed = 50;
+		this.state = WALK_RIGHT;
+		this.animation = new Animation(this.spritesheets[5], 300, 418, 4, 0.5, 4, true, 0.85, false);
+	} else if (state === WALK_LEFT) {
+		this.speed = -50;
+		this.state = WALK_LEFT;
+		this.animation = new Animation(this.spritesheets[5], 300, 418, 4, 0.5, 4, true, 0.85, true);
+	}
+
 }
