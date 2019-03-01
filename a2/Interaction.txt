@@ -1,0 +1,48 @@
+INTERACTION:
+Level: 0,1,2,3,4  Color:White, Dark Red, Black, Yellow
+Level: 0
+	If neighbor level <=10
+		this.lvl = 1
+	If neighbor level <= 15
+		this.lvl = 2
+	If neighbor level <= 20
+		this.lvl = 3
+	if neighbor level >20
+		this.lvl = 4
+Level: 1
+	If neighbor level <= 5
+		this.level = 4
+	if neighbor level <=15
+		this.lvl = 3
+	if neighbor level <= 20
+		this.lvl = 2
+	if neighbor level > 20
+		this.lvl = 0
+Level: 2 
+	If neighbor level <= 5
+		this.level = 0
+	if neighbor level <=15
+		this.lvl = 4
+	if neighbor level <= 20
+		this.lvl = 3
+	if neighbor level > 20
+		this.lvl = 1
+Level: 3 
+	If neighbor level <= 5
+		this.level = 1
+	if neighbor level <=15
+		this.lvl = 4
+	if neighbor level <= 20
+		this.lvl = 2
+	if neighbor level > 20
+		this.lvl = 0
+Level: 4 
+	If neighbor level <= 5
+		this.level = 3
+	if neighbor level <=15
+		this.lvl = 0
+	if neighbor level <= 20
+		this.lvl = 2
+	if neighbor level > 20
+		this.lvl = 1
+		
