@@ -18,15 +18,15 @@ function GameEngine() {
 	this.ticked = false;
 	this.isStepping = true;
 	this.play = null;
-	this.pause = null;
-	this.step = null;
+	this.pause = null;//this
+	this.step = null;//this
 }
 
 GameEngine.prototype.init = function (ctx, play, pause, step) {
     this.ctx = ctx;
 	this.play = play;
-	this.pause = pause;
-	this.step = step;
+	this.pause = pause;//this
+	this.step = step;//this
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
