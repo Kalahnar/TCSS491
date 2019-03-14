@@ -26,6 +26,7 @@ function GameEngine() {
 }
 
 GameEngine.prototype.init = function (ctx, play, pause, step) {
+	this.socket = io.connect("http://24.16.255.56:8888");
     this.ctx = ctx;
 	this.play = play;
 	this.pause = pause;//this
